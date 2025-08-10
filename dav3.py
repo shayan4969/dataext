@@ -65,7 +65,21 @@ if uploaded_file:
             for page_num, title, table in tables_with_titles:
                 st.markdown(f"### 📄 Page {page_num}: {title}")
                 df = pd.DataFrame(table[1:], columns=table[0])  # Use first row as header
-                st.dataframe(df, use_container_width=True)  # Wide mode table
+
+                # ✅ Fix duplicate column names
+                df.columns = pd.io.parsers.ParserBase({'names': df.columns})._maybe_dedup_names(df.columns)
+
+                # ✅ Display with wide column sizing
+                st.dataframe(df, use_container_width=True)
+
+                # Optional: CSV download
+                csv = df.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label=f"Download '{title}' as CSV",
+                    data=csv,
+                    file_name=f"{title.replace(' ', '_')}.csv",
+                    mime="text/csv"
+                )
         else:
             st.warning("No titled tables found from page 5 onwards.")
 
@@ -76,4 +90,3 @@ if uploaded_file:
                 st.image(img, use_column_width=True)
         else:
             st.warning("No images found from page 5 onwards.")
-
