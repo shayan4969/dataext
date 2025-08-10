@@ -66,10 +66,18 @@ if uploaded_file:
                 st.markdown(f"### 📄 Page {page_num}: {title}")
                 df = pd.DataFrame(table[1:], columns=table[0])  # Use first row as header
 
-                # ✅ Fix duplicate column names
-                df.columns = pd.io.parsers.ParserBase({'names': df.columns})._maybe_dedup_names(df.columns)
+                # ✅ Fix duplicate column names manually
+                seen = {}
+                new_columns = []
+                for col in df.columns:
+                    if col in seen:
+                        seen[col] += 1
+                        new_columns.append(f"{col}_{seen[col]}")
+                    else:
+                        seen[col] = 0
+                        new_columns.append(col)
+                df.columns = new_columns
 
-                # ✅ Display with wide column sizing
                 st.dataframe(df, use_container_width=True)
 
                 # Optional: CSV download
