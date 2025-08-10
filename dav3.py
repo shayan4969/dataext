@@ -5,7 +5,7 @@ import pandas as pd
 from PIL import Image
 
 st.set_page_config(page_title="Datasheet Extractor", page_icon="📄", layout="wide")
-st.title("📄 All Tables + Images Extractor (Start from Page 5, No Unknown Titles)")
+st.title("DATASHEET INFORMATION")
 
 uploaded_file = st.file_uploader("Upload component datasheet (PDF)", type=["pdf"])
 
@@ -76,3 +76,4 @@ if uploaded_file:
                 st.image(img, use_column_width=True)
         else:
             st.warning("No images found from page 5 onwards.")
+
