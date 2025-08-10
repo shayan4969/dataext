@@ -74,8 +74,17 @@ if uploaded_file:
                 # Create DataFrame
                 df = pd.DataFrame(table[1:], columns=table[0])
 
-                # Deduplicate column names if repeated
-                df.columns = pd.io.parsers.ParserBase({'names': df.columns})._maybe_dedup_names(df.columns)
+                # Deduplicate column names manually
+                seen = {}
+                new_columns = []
+                for col in df.columns:
+                    if col not in seen:
+                        seen[col] = 0
+                        new_columns.append(col)
+                    else:
+                        seen[col] += 1
+                        new_columns.append(f"{col}_{seen[col]}")
+                df.columns = new_columns
 
                 st.dataframe(df, use_container_width=True)
 
